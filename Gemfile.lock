@@ -2,7 +2,9 @@ GEM
   remote: https://rubygems.org/
   specs:
     backports (3.3.0)
+    dalli (2.6.3)
     eventmachine (1.0.3)
+    memcachier (0.0.2)
     rack (1.5.2)
     rack-protection (1.5.0)
       rack
@@ -26,6 +28,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  dalli
+  memcachier
   rmagick
   sinatra
   sinatra-contrib
