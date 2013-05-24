@@ -14,7 +14,14 @@ class SpiritualApp < Sinatra::Base
       halt 400, 'url required'
     end
 
-    content = open(url).read
+    cache = Dalli::Client.new
+
+    content = cache.get(url)
+
+    unless content
+      content = open(url).read
+      cache.set(url, content, 600)
+    end
 
     source_image = Magick::Image.from_blob(content).first
 
