@@ -14,25 +14,25 @@ class SpiritualApp < Sinatra::Base
       halt 400, 'url required'
     end
 
+    content_type 'image/jpeg'
+
     cache = Dalli::Client.new
 
     content = cache.get(url)
+    return content if content
 
-    unless content
-      content = open(url).read
-      cache.set(url, content, 600)
-    end
+    source = open(url).read
 
-    source_image = Magick::Image.from_blob(content).first
+    source_image = Magick::Image.from_blob(source).first
 
     radius = [source_image.columns, source_image.rows, 50.0].min
     sigma = radius / 5
     dest_image = source_image.blur_image radius, sigma
     dest_image.format = 'JPEG'
+    content = dest_image.to_blob
 
-    content_type 'image/jpeg'
-
-    dest_image.to_blob
+    cache.set(url, content, 600)
+    content
   end
 
 end
